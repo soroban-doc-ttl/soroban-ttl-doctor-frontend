@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #1c2024;
+  --bg: #eef1f3;
+  --bg-glow-a: #cfd9e6;
+  --bg-glow-b: #d8cfe6;
+  --glass: rgba(255, 255, 255, 0.5);
+  --glass-strong: rgba(255, 255, 255, 0.72);
+  --hairline: rgba(60, 70, 85, 0.16);
+  --shadow: rgba(20, 25, 35, 0.14);
+  --sweep: rgba(255, 255, 255, 0.85);
+  --pass: #0f6e5c;
+  --fail: #a3402c;
+  --warn: #a3762c;
+  --muted: #5b6470;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #edf0f2;
+    --bg: #0b0d10;
+    --bg-glow-a: #16233a;
+    --bg-glow-b: #241a36;
+    --glass: rgba(255, 255, 255, 0.045);
+    --glass-strong: rgba(255, 255, 255, 0.09);
+    --hairline: rgba(255, 255, 255, 0.13);
+    --shadow: rgba(0, 0, 0, 0.5);
+    --sweep: rgba(255, 255, 255, 0.5);
+    --pass: #4fd8ba;
+    --fail: #f0876c;
+    --warn: #e8b768;
+    --muted: #9aa4b1;
+  }
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-glass: var(--glass);
+  --color-glass-strong: var(--glass-strong);
+  --color-hairline: var(--hairline);
+  --color-pass: var(--pass);
+  --color-fail: var(--fail);
+  --color-warn: var(--warn);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--hairline);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Same recipe as sep24-conformance-frontend's design system, with a
+   cooler slate/blue-violet palette instead of that project's warm
+   parchment tone, so the two look like siblings, not the same app. */
+.backdrop-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.backdrop-field::before,
+.backdrop-field::after {
+  content: "";
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  animation: drift 26s ease-in-out infinite alternate;
+}
+
+.backdrop-field::before {
+  background: var(--bg-glow-a);
+  top: -20%;
+  left: -10%;
+}
+
+.backdrop-field::after {
+  background: var(--bg-glow-b);
+  bottom: -25%;
+  right: -15%;
+  animation-delay: -13s;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(6%, 8%) scale(1.08);
+  }
+}
+
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--hairline);
+  border-radius: 24px;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+.glass-strong {
+  background: var(--glass-strong);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+}
+
+.sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.sweep::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(75deg, transparent, var(--sweep), transparent);
+  opacity: 0;
+  transform: translateX(-40%) rotate(0deg);
+  pointer-events: none;
+}
+
+.sweep:hover::after,
+.sweep:focus-visible::after {
+  opacity: 0.35;
+  animation: sweep 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes sweep {
+  from {
+    transform: translate(-130%, 0);
+  }
+  to {
+    transform: translate(230%, 0);
+  }
+}
+
+.pill {
+  border-radius: 9999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop-field::before,
+  .backdrop-field::after,
+  .sweep::after {
+    animation: none;
+  }
+}
